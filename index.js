@@ -79,6 +79,21 @@ function getInputStream(source) {
     }
 }
 
+function getOpts(options) {
+    const defaults = {
+        cwd: undefined,
+        env: process.env
+    };
+
+    if (options.cwd) {
+        defaults.cwd = options.cwd;
+    }
+    if (options.env) {
+        defaults.env = options.env;
+    }
+    return defaults;
+}
+
 function getArgs(options) {
     const args = [ 'stdin', 'stdout' ]
 
@@ -223,7 +238,7 @@ function recognize(source, options, callback) {
                 return onError(ex)
             }
 
-            child = spawn(tesseract, getArgs(options))
+            child = spawn(tesseract, getArgs(options), getOpts(options))
             transform = stream.pipe(child.stdin)
 
             child.stdout.on('data', chunk => stdout += chunk)
